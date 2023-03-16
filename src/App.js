@@ -1,23 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect, useRef } from 'react';
+import GameSelect from './GameSelect';
+import Game from './Game';
 
-function App() {
+const App = () => {
+  const [mapSelected, setMapSelected] = useState(true);
+  const [size, setSize] = useState(4);
+  const [difficulty, setDifficulty] = useState('medium');
+  const [operators, setOperators] = useState('plus-minus');
+
+  const startGame = () => {
+    if (size && difficulty && operators) {
+      setMapSelected(true);
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className='header'>
+        Welcome to KenKen
+      </div>
+      <div className='game'>
+        {mapSelected ? <Game size={size} difficulty={difficulty} operators={operators}/> : <GameSelect startGame={startGame} setSize={setSize} setDifficulty={setDifficulty} setOperators={setOperators} size={size} difficulty={difficulty} operators={operators}/>} 
+      </div>
+      <div className='header'>
+        Created by Michael Quint 2023
+      </div>
     </div>
   );
 }

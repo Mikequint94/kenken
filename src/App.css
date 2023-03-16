@@ -1,21 +1,16 @@
 .App {
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.header {
+  min-height: 5vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
+.game {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,16 +18,57 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.selection div{
+  display: flex;
+  justify-content: space-between;
+}
+.selection button {
+  font-size: calc(10px + 3vmin);
+  padding: 10px;
+  margin: 20px;
+  border-radius: 100px;
+  width: 110px;
+}
+.selection .selected {
+  filter: hue-rotate(275deg);
+}
+.sizes button {
+  background: yellow;
+}
+.difficulties button {
+  width: 150px;
+  background: orange;
+}
+.operators button {
+  background: red;
+}
+.selection .start {
+  background: chocolate;
+  margin-top: 12vh;
+  font-size: calc(10px + 5vmin);
+  width: 40vw;
+}
+button:active{
+  background:olive;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.map {
+  margin-top: 10vh;
+  display: flex;
+  justify-content: center;
+  border: 6px solid darkslategray;
+  width: fit-content;
+}
+.map .box {
+  height: 50px;
+  width: 50px;
+  background: darkcyan;
+  margin: 2px;
+  border: 2px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.row {
+  flex-direction: column;
 }
