@@ -69,6 +69,16 @@ button:active{
   justify-content: center;
   align-items: center;
 }
+.map .selectedBox {
+  height: 50px;
+  width: 50px;
+  background: lightskyblue;
+  margin: 2px;
+  border: 2px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .row {
   flex-direction: column;
 }
