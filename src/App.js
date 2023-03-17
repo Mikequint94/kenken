@@ -7,7 +7,7 @@ const App = () => {
   const [mapSelected, setMapSelected] = useState(false);
   const [size, setSize] = useState(4);
   const [difficulty, setDifficulty] = useState('medium');
-  const [operators, setOperators] = useState('plus-minus');
+  const [operators, setOperators] = useState('plus');
   const [answerMap, setAnswerMap] = useState();
   const [playerMap, setPlayerMap] = useState();
 
