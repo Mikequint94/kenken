@@ -21,6 +21,7 @@
 .selection div{
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 .selection button {
   font-size: calc(10px + 3vmin);
@@ -63,22 +64,34 @@ button:active{
   height: 60px;
   width: 60px;
   background: darkcyan;
-  margin: 2px;
-  border: 2px solid white;
-  /* display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column; */
+  /* margin: 2px; */
+  border: 2px solid black;
+}
+.map .box.open-right{
+  border-right: 2px solid #00ffff21;
+}
+.map .box.open-left{
+  border-left: 2px solid #00ffff21;
+}
+.map .box.open-down{
+  border-bottom: 2px solid #00ffff21;
+}
+.map .box.open-up{
+  border-top: 2px solid #00ffff21;
+}
+.map .box.open-vertical{
+  border-top: 2px solid #00ffff21;
+  border-bottom: 2px solid #00ffff21;
+}
+.map .box.open-horizontal{
+  border-left: 2px solid #00ffff21;
+  border-right: 2px solid #00ffff21;
 }
 .map .selectedBox {
-  height: 60px;
-  width: 60px;
   background: lightskyblue;
-  margin: 2px;
-  border: 2px solid white;
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
+}
+.map .box:focus-visible {
+  outline: none;
 }
 .map .row .cage {
   width: 20px;

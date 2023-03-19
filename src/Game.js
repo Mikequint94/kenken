@@ -4,16 +4,23 @@ import './App.css';
 const Game = ({size, difficulty, operators, answerMap, playerMap, setAnswerMap, setPlayerMap}) => {
     //ignore difficulty and operators for a while
 
-    const [selectedBox, setSelectedBox] = useState();
-    const [playerArray, setPlayerArray] = useState([...Array(size)].map(e => Array(size).fill().map(u => ({num: '', cage: ''}))));
-    const [answerArray, setAnswerArray] = useState();
+    // need to do notes!
 
-    let lastTarget = null;
-    const selectBox = (num, e) => {
+    // harder but sometimes boards have multiple solutions... hmmm
+
+    const [selectedBox, setSelectedBox] = useState();
+    const [playerArray, setPlayerArray] = useState([...Array(size)].map(e => Array(size).fill().map(u => ({num: '', cage: '', style: ''}))));
+    const [answerArray, setAnswerArray] = useState();
+    const [counter, setCounter] = useState(0);
+    const [gameOver, setGameOver] = useState(false);
+
+    let lastBoxNum = null;
+    const selectBox = (num, lastBox) => {
         setSelectedBox(num)
-        lastTarget && lastTarget.classList.remove('selectedBox')
-        e.currentTarget.classList.toggle('selectedBox')
-        lastTarget = e.currentTarget;
+        lastBoxNum && document.getElementById(`box-${lastBoxNum}`).classList.remove('selectedBox');
+        lastBox && document.getElementById(`box-${lastBox}`).classList.remove('selectedBox');
+        document.getElementById(`box-${num}`).classList.toggle('selectedBox');
+        lastBoxNum = num;
       }
     const createAnswerMap = (size) => {
         const map =[];
@@ -50,7 +57,7 @@ const Game = ({size, difficulty, operators, answerMap, playerMap, setAnswerMap, 
             let playerRow = [];
             for (let j = 0; j < size; j++) {
                 let boxNum = i*size + j + 1;
-                playerRow.push(<div tabIndex='0' onClick={(e) => selectBox(boxNum, e)} className='box'>
+                playerRow.push(<div tabIndex='0' id={`box-${boxNum}`} onClick={(e) => selectBox(boxNum)} className={`box ${playerArray[i][j].style}`}>
                     <div className='cage'>{playerArray[i][j].cage}</div>
                     <div className='num'>{playerArray[i][j].num}</div>
                 </div>);
@@ -59,10 +66,8 @@ const Game = ({size, difficulty, operators, answerMap, playerMap, setAnswerMap, 
         }
         setPlayerMap(playerMap);
         const playerNums = playerArray.map(arr => arr.map(obj => obj.num));
-        // console.log(JSON.stringify(answerArray))
-        // console.log(JSON.stringify(playerNums))
         if (JSON.stringify(playerNums) === JSON.stringify(answerArray)) {
-            alert('you win!');
+            setGameOver(true);
         }
         return;
     };
@@ -74,22 +79,81 @@ const Game = ({size, difficulty, operators, answerMap, playerMap, setAnswerMap, 
         // will need playerMap to add the symbols - or it will happen during update
         // need the answerArray!
         // will need the playerArray to easily get the numbers and change the cage obj
+
+        // TODO: cages that are 3 long or 3 wide or tetris block shaped (only for + or x)
+        // Idea: have vars like numSquares that track things and make them less likely the more I have
         console.log(answerArray)
         for (let i = 0; i < size; i++) {
             for (let j = 0; j < size; j++) {
-                if (Math.random() <.4 && j+1 < size && !playerArray[i][j].cage && !playerArray[i][j+1].cage) {
+                // 2 vertical
+                if (Math.random() <.4 && j+1 < size && !playerArray[i][j].style && !playerArray[i][j+1].style) {
                     playerArray[i][j].cage = `+${answerArray[i][j] + answerArray[i][j+1]}`;
-                    playerArray[i][j+1].cage = '^'
-                } else if (Math.random() <.8 && i+1 < size && !playerArray[i][j].cage && !playerArray[i+1][j].cage) {
+                    playerArray[i][j].style='open-down';
+                    playerArray[i][j+1].style='open-up';
+                    // 3 vertical
+                    if (Math.random() <.4 && j+2 < size && !playerArray[i][j+2].style) {
+                        playerArray[i][j].cage = `+${answerArray[i][j] + answerArray[i][j+1] + answerArray[i][j+2]}`;
+                        playerArray[i][j+1].style='open-vertical';
+                        playerArray[i][j+2].style='open-up';
+                        // 4 vertical
+                        if (Math.random() <.45 && j+3 < size && !playerArray[i][j+3].style) {
+                            playerArray[i][j].cage = `+${answerArray[i][j] + answerArray[i][j+1] + answerArray[i][j+2] + answerArray[i][j+3]}`;
+                            playerArray[i][j+2].style='open-vertical';
+                            playerArray[i][j+3].style='open-up';    
+                        }
+                    }
+                // squares
+                } else if (Math.random() <.15 && j+1 < size && i+1 < size && !playerArray[i][j].style
+                && !playerArray[i][j+1].style && !playerArray[i+1][j].style && !playerArray[i+1][j+1].style) {
+                    playerArray[i][j].cage = `+${answerArray[i][j] + answerArray[i][j+1] + answerArray[i+1][j] + answerArray[i+1][j+1]}`;
+                    playerArray[i][j].style='open-down open-right';
+                    playerArray[i][j+1].style='open-up open-right';
+                    playerArray[i+1][j].style='open-left open-down';
+                    playerArray[i+1][j+1].style='open-left open-up';
+                // triangles |~, |_. ~|
+                } else if (Math.random() <.2 && j+1 < size && i+1 < size && !playerArray[i][j].style
+                    && !playerArray[i][j+1].style && !playerArray[i+1][j].style) {
+                    playerArray[i][j].cage = `+${answerArray[i][j] + answerArray[i][j+1] + answerArray[i+1][j]}`;
+                    playerArray[i][j].style='open-down open-right';
+                    playerArray[i][j+1].style='open-up';
+                    playerArray[i+1][j].style='open-left';
+                } else if (Math.random() <.25 && j+1 < size && i+1 < size && !playerArray[i][j].style
+                    && !playerArray[i][j+1].style && !playerArray[i+1][j+1].style) {
+                    playerArray[i][j].cage = `+${answerArray[i][j] + answerArray[i][j+1] + answerArray[i+1][j+1]}`;
+                    playerArray[i][j].style='open-down';
+                    playerArray[i][j+1].style='open-up open-right';
+                    playerArray[i+1][j+1].style='open-left';
+                } else if (Math.random() <.3 && j+1 < size && i+1 < size && !playerArray[i][j].style
+                    && !playerArray[i+1][j].style && !playerArray[i+1][j+1].style) {
+                    playerArray[i][j].cage = `+${answerArray[i][j] + answerArray[i+1][j] + answerArray[i+1][j+1]}`;
+                    playerArray[i][j].style='open-right';
+                    playerArray[i+1][j].style='open-left open-down';
+                    playerArray[i+1][j+1].style='open-up';
+                
+
+            
+                // 2 horizontal
+                } else if (Math.random() <.8 && i+1 < size && !playerArray[i][j].style && !playerArray[i+1][j].style) {
                     playerArray[i][j].cage = `+${answerArray[i][j] + answerArray[i+1][j]}`;
-                    playerArray[i+1][j].cage = '<'
-                } else if (!playerArray[i][j].cage) {
+                    playerArray[i][j].style='open-right';
+                    playerArray[i+1][j].style='open-left';
+                    // 3 horizontal
+                    if (Math.random() <.4 && i+2 < size && !playerArray[i+2][j].style) {
+                        playerArray[i][j].cage = `+${answerArray[i][j] + answerArray[i+1][j] + answerArray[i+2][j]}`;
+                        playerArray[i+1][j].style='open-horizontal';
+                        playerArray[i+2][j].style='open-left';
+                        // 4 horizontal
+                        if (Math.random() <.45 && i+3 < size && !playerArray[i+3][j].style) {
+                            playerArray[i][j].cage = `+${answerArray[i][j] + answerArray[i+1][j] + answerArray[i+2][j] + answerArray[i+3][j]}`;
+                            playerArray[i+2][j].style='open-horizontal';
+                            playerArray[i+3][j].style='open-left';    
+                        }
+                    }
+                // solo
+                } else if (!playerArray[i][j].style) {
                     playerArray[i][j].cage = answerArray[i][j];
                 }
 
-                // if (Math.random() < .2 && !playerArray[i][j].cage) {
-                //     playerArray[i][j].cage = answerArray[i][j]
-                // } else (Math.random() <.5)
             }
         }
     };
@@ -105,14 +169,27 @@ const Game = ({size, difficulty, operators, answerMap, playerMap, setAnswerMap, 
 
     useEffect(() => {
         const callback = (event) => {
+            console.log(event.key)
+            let i = Math.floor((selectedBox - 1) / size);
+            let j = selectedBox - 1 - size * i;
             if(event.key <= size.toString() && event.key > 0){
-                let i = Math.floor((selectedBox - 1) / size);
-                let j = selectedBox - 1 - size * i;
-                console.log(playerArray, i, j, selectedBox)
                 playerArray[i][j].num = parseInt(event.key);
                 setPlayerArray(playerArray);
                 updatePlayerMap(size);
-                lastTarget = event.target;
+                lastBoxNum = selectedBox;
+            } else if (event.key === 'Backspace') {
+                playerArray[i][j].num = '';
+                setPlayerArray(playerArray);
+                updatePlayerMap(size);
+                lastBoxNum = selectedBox;
+            } else if (event.key === 'ArrowLeft' && i > 0) {
+                selectBox(selectedBox - size, selectedBox);
+            } else if (event.key === 'ArrowRight' && i < size - 1) {
+                selectBox(selectedBox + size, selectedBox);
+            } else if (event.key === 'ArrowUp' && j > 0) {
+                selectBox(selectedBox - 1, selectedBox);
+            } else if (event.key === 'ArrowDown' && j < size - 1) {
+                selectBox(selectedBox + 1, selectedBox);
             }
         }
         document.addEventListener('keydown', callback);
@@ -121,15 +198,24 @@ const Game = ({size, difficulty, operators, answerMap, playerMap, setAnswerMap, 
         };
       }, [selectedBox])
   
+    useEffect(() => {
+        if (gameOver) {return;}
+        const interval = setInterval(() => setCounter(counter+1), 1000);
+        return () => clearInterval(interval);
+      }, [counter]);
+
     return (
     <div className='game'>
         <div>
             size: {size}  difficulty: {difficulty}  operators: {operators}
-            {selectedBox}
         </div>
-        <div className='map'>
+        <div>
+            {Math.floor(counter/60)}:{counter%60 < 10 && '0'}{counter%60}
+        </div>
+        {gameOver && 'YOU WIN!'}
+        {/* <div className='map'>
             {answerMap}
-        </div>
+        </div> */}
         <div className='map'>
             {playerMap}
         </div>

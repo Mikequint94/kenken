@@ -11,6 +11,9 @@ const GameSelect = ({startGame, setSize, setDifficulty, setOperators, size, diff
             <button className={size === 4 && 'selected'} onClick={() => setSize(4)}>4 x 4</button>
             <button className={size === 5 && 'selected'} onClick={() => setSize(5)}>5 x 5</button>
             <button className={size === 6 && 'selected'} onClick={() => setSize(6)}>6 x 6</button>
+            <button className={size === 7 && 'selected'} onClick={() => setSize(7)}>7 x 7</button>
+            <button className={size === 8 && 'selected'} onClick={() => setSize(8)}>8 x 8</button>
+            <button className={size === 9 && 'selected'} onClick={() => setSize(9)}>9 x 9</button>
         </div>
         Select Difficulty
         <div className='difficulties'>
