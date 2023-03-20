@@ -9,18 +9,15 @@ const Game = ({size, difficulty, operators, answerMap, playerMap, setAnswerMap, 
     // harder but sometimes boards have multiple solutions... hmmm
 
     const [selectedBox, setSelectedBox] = useState();
-    const [playerArray, setPlayerArray] = useState([...Array(size)].map(e => Array(size).fill().map(u => ({num: '', cage: '', style: ''}))));
+    const [playerArray, setPlayerArray] = useState([...Array(size)].map(e => Array(size).fill().map(u => ({num: '', cage: '', style: '', notes: new Set()}))));
     const [answerArray, setAnswerArray] = useState();
     const [counter, setCounter] = useState(0);
     const [gameOver, setGameOver] = useState(false);
 
-    let lastBoxNum = null;
-    const selectBox = (num, lastBox) => {
+    const selectBox = (num) => {
         setSelectedBox(num)
-        lastBoxNum && document.getElementById(`box-${lastBoxNum}`).classList.remove('selectedBox');
-        lastBox && document.getElementById(`box-${lastBox}`).classList.remove('selectedBox');
+        document.getElementsByClassName('selectedBox')[0] && document.getElementsByClassName('selectedBox')[0].classList.remove('selectedBox');
         document.getElementById(`box-${num}`).classList.toggle('selectedBox');
-        lastBoxNum = num;
       }
     const createAnswerMap = (size) => {
         const map =[];
@@ -60,6 +57,7 @@ const Game = ({size, difficulty, operators, answerMap, playerMap, setAnswerMap, 
                 playerRow.push(<div tabIndex='0' id={`box-${boxNum}`} onClick={(e) => selectBox(boxNum)} className={`box ${playerArray[i][j].style}`}>
                     <div className='cage'>{playerArray[i][j].cage}</div>
                     <div className='num'>{playerArray[i][j].num}</div>
+                    <div className='notes'>{Array.from(playerArray[i][j].notes).sort((a, b) => a - b)}</div>
                 </div>);
             }
             playerMap.push(<div className='row'>{playerRow}</div>);
@@ -167,29 +165,46 @@ const Game = ({size, difficulty, operators, answerMap, playerMap, setAnswerMap, 
         updatePlayerMap(size);
     }, [answerArray]);
 
+    const shiftMap = {
+        '!': '1',
+        '@': '2',
+        '#': '3',
+        '$': '4',
+        '%': '5',
+        '^': '6',
+        '&': '7',
+        '*': '8',
+        '(': '9',
+    }
+
     useEffect(() => {
         const callback = (event) => {
-            console.log(event.key)
             let i = Math.floor((selectedBox - 1) / size);
             let j = selectedBox - 1 - size * i;
             if(event.key <= size.toString() && event.key > 0){
                 playerArray[i][j].num = parseInt(event.key);
                 setPlayerArray(playerArray);
                 updatePlayerMap(size);
-                lastBoxNum = selectedBox;
             } else if (event.key === 'Backspace') {
                 playerArray[i][j].num = '';
                 setPlayerArray(playerArray);
                 updatePlayerMap(size);
-                lastBoxNum = selectedBox;
             } else if (event.key === 'ArrowLeft' && i > 0) {
-                selectBox(selectedBox - size, selectedBox);
+                selectBox(selectedBox - size);
             } else if (event.key === 'ArrowRight' && i < size - 1) {
-                selectBox(selectedBox + size, selectedBox);
+                selectBox(selectedBox + size);
             } else if (event.key === 'ArrowUp' && j > 0) {
-                selectBox(selectedBox - 1, selectedBox);
+                selectBox(selectedBox - 1);
             } else if (event.key === 'ArrowDown' && j < size - 1) {
-                selectBox(selectedBox + 1, selectedBox);
+                selectBox(selectedBox + 1);
+            } else if (['!', '@', '#', '$', '%', '^', '&', '*', '('].includes(event.key)) {
+                console.log(playerArray[i][j].notes)
+                if (playerArray[i][j].notes.has(shiftMap[event.key])) {
+                    playerArray[i][j].notes.delete(shiftMap[event.key]);
+                } else {
+                    playerArray[i][j].notes.add(shiftMap[event.key]);
+                }
+                updatePlayerMap(size);
             }
         }
         document.addEventListener('keydown', callback);

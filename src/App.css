@@ -95,8 +95,17 @@ button:active{
 }
 .map .row .cage {
   width: 20px;
-  height: 20px;
+  height: 18px;
   font-size: calc(5px + 2vmin)
+}
+.map .row .num {
+  height: 27px;
+}
+.map .row .notes {
+  font-size: calc(5px + 1vmin);
+  color: #143a10;
+  text-align: start;
+  margin-left: 3px;
 }
 .row {
   flex-direction: column;
