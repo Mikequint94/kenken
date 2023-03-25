@@ -26,7 +26,7 @@ const startGame = () => {
         Welcome to KenKen
       </div>
       <div className='game'>
-        {mapSelected ? <Game size={size} difficulty={difficulty} operators={operators} answerMap={answerMap} playerMap={playerMap} setAnswerMap={setAnswerMap} setPlayerMap={setPlayerMap}/> : <GameSelect startGame={startGame} setSize={setSize} setDifficulty={setDifficulty} setOperators={setOperators} size={size} difficulty={difficulty} operators={operators}/>} 
+        {mapSelected ? <Game size={size} difficulty={difficulty} operators={operators} playerMap={playerMap} setAnswerMap={setAnswerMap} setPlayerMap={setPlayerMap}/> : <GameSelect startGame={startGame} setSize={setSize} setDifficulty={setDifficulty} setOperators={setOperators} size={size} difficulty={difficulty} operators={operators}/>} 
       </div>
       <div className='header'>
         Created by Michael Quint 2023
