@@ -17,6 +17,16 @@ const Game = ({size, difficulty, operators, playerMap, setAnswerMap, setPlayerMa
     const [answerArray, setAnswerArray] = useState();
     const [counter, setCounter] = useState(0);
     const [gameOver, setGameOver] = useState(false);
+    const [showReplay, setShowReplay] = useState(false);
+    const [replay, setReplay] = useState();
+    const [reels, setReels] = useState([]);
+
+    useEffect(() => {
+        if (playerMap) {
+          setReels(prevReels => [...prevReels, playerMap]);
+          console.log(reels)
+        }
+      }, [playerMap]);
 
     const selectBox = (num) => {
         setSelectedBox(num)
@@ -360,10 +370,40 @@ const Game = ({size, difficulty, operators, playerMap, setAnswerMap, setPlayerMa
       }, [selectedBox])
   
     useEffect(() => {
-        if (gameOver) {return;}
+        if (gameOver) {
+            setReplay(playerMap);
+            setTimeout( () => setShowReplay(true), 2500);
+            return;
+        }
         const interval = setInterval(() => setCounter(counter+1), 1000);
         return () => clearInterval(interval);
-      }, [counter]);
+      }, [counter]);  
+
+    const reelsSpeed = (length) => {
+        if (length < 25) {
+            return 300;
+        } else if (length < 50) {
+            return 200;
+        } else if (length < 75) {
+            return 150;
+        } else if (length < 100) {
+            return 120;
+        } else if (length < 150) {
+            return 100;
+        } else {
+            return 80;
+        }
+    }
+
+    useEffect(() => {
+        console.log('ShowReplayChangedddd')
+        if (showReplay) {
+            console.log('to true')
+            let reelsCopy = [...reels];
+            const interval = setInterval(() => setReplay(reelsCopy.shift()), reelsSpeed(reels.length));
+            return () => clearInterval(interval);
+        }
+      }, [showReplay]);
 
     return (
     <div className='game'>
@@ -373,13 +413,24 @@ const Game = ({size, difficulty, operators, playerMap, setAnswerMap, setPlayerMa
         <div>
             {Math.floor(counter/60)}:{counter%60 < 10 && '0'}{counter%60}
         </div>
-        {gameOver && 'YOU WIN!'}
+        <div className='winBlock'>
+            {gameOver && 'YOU WIN!'}
+            {gameOver && showReplay && !replay && <div className='replay'>
+                <button onClick={() => {
+                    setShowReplay(false);
+                    setTimeout(() => {setReplay(playerMap); setShowReplay(true);}, 500);
+                }}>Replay Replay?</button>
+            </div>}
+        </div>
         {/* <div className='map'>
             {answerMap}
         </div> */}
-        <div className='map'>
+        {!replay && <div className='map'>
             {playerMap}
-        </div>
+        </div>}
+        {replay && <div className='map'>
+            {replay}
+        </div>}
     </div>
     );
   }

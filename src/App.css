@@ -30,6 +30,13 @@
   border-radius: 100px;
   width: 110px;
 }
+.replay button {
+  font-size: 16px;
+  padding: 10px;
+  margin: 20px;
+  border-radius: 100px;
+  width: 200px;
+}
 .selection .selected {
   filter: hue-rotate(275deg);
 }
@@ -54,7 +61,7 @@ button:active{
 }
 
 .map {
-  margin-top: 10vh;
+  margin: 30px;
   display: flex;
   justify-content: center;
   border: 6px solid darkslategray;
@@ -109,4 +116,7 @@ button:active{
 }
 .row {
   flex-direction: column;
+}
+.winBlock {
+  height: 100px;
 }
