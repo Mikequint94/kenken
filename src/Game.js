@@ -353,7 +353,7 @@ const Game = ({size, difficulty, operators, playerMap, setAnswerMap, setPlayerMa
             } else if (['!', '@', '#', '$', '%', '^', '&', '*', '('].includes(event.key)) {
                 if (playerArray[i][j].notes.has(shiftMap[event.key])) {
                     playerArray[i][j].notes.delete(shiftMap[event.key]);
-                } else {
+                } else if (shiftMap[event.key] <= size) {
                     let possibleNote = true;
                     for (let k = 0; k < size; k ++) {
                         if (playerArray[k][j].num === parseInt(shiftMap[event.key]) || playerArray[i][k].num === parseInt(shiftMap[event.key])) {
@@ -414,7 +414,9 @@ const Game = ({size, difficulty, operators, playerMap, setAnswerMap, setPlayerMa
     return (
     <div className='game'>
         <div>
-            size: {size}  difficulty: {difficulty}  operators: {operators}
+            <span>Size: {size}x{size}</span>
+            <span>Difficulty: {difficulty}</span>
+            <span>Operators: {operators}</span>
         </div>
         <div>
             {Math.floor(counter/60)}:{counter%60 < 10 && '0'}{counter%60}

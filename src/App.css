@@ -129,3 +129,6 @@ button:active{
 .winBlock {
   height: 100px;
 }
+.game .game div span {
+  margin: 20px
+}
