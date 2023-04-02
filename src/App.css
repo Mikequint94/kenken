@@ -18,10 +18,19 @@
   font-size: 25px;
   color: white;
 }
+.selection {
+  max-width: 602px;
+}
 .selection div{
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+}
+.selection .history {
+  display: inline-block;
+}
+.history ul {
+  list-style: auto;
 }
 .selection button {
   font-size: 24px;

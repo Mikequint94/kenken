@@ -1,8 +1,27 @@
-import { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 const GameSelect = ({startGame, setSize, setDifficulty, setOperators, size, difficulty, operators}) => {
-  
+    // const pastWins = [{size: 9, time: '1:34'}, {size: 5, time: '0:34'}];
+    let pastWins = localStorage.getItem('gameWins') || '{}';
+    // if (!pastWins.length) {
+    //     localStorage.setItem('gameWins', )
+    // }
+    console.log(pastWins)
+    let pastWinsArray = pastWins.split(', ');
+    console.log (pastWinsArray);
+
+    const formatList = (arr) => {
+        let listItems = [];
+        for (let i = 0; i < arr.length; i++) {
+          let obj = JSON.parse(arr[i]);
+          const { size, time } = obj;
+          const listItem = <li>{`size: ${size} - time: ${time}`}</li>;
+          listItems.push(listItem);
+        }
+        return <ul>{listItems}</ul>;
+    }
+
+
     return (
     <div className='selection'>
         Select Size
@@ -28,6 +47,12 @@ const GameSelect = ({startGame, setSize, setDifficulty, setOperators, size, diff
             <button className={operators === 'all' && 'selected'} onClick={() => setOperators('all')}>+ - * /</button>
         </div>
         <button onClick={() => startGame()}className='start'> Start</button>
+        <div className="history">
+            Past wins:
+            <div>
+                {formatList(pastWinsArray)}
+            </div>
+        </div>
     </div>
     );
   }

@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import GameSelect from './GameSelect';
 import Game from './Game';
 

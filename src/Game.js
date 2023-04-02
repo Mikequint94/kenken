@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 
 const Game = ({size, difficulty, operators, playerMap, setAnswerMap, setPlayerMap}) => {
@@ -11,6 +11,8 @@ const Game = ({size, difficulty, operators, playerMap, setAnswerMap, setPlayerMa
 
     // Cool idea to take "screenshot" of map every minute.  And then when you finish it replays it for you!
     // undo button?
+
+    // idea: say how many youve completed local storage
 
     const [selectedBox, setSelectedBox] = useState();
     const [playerArray, setPlayerArray] = useState([...Array(size)].map(e => Array(size).fill().map(u => ({num: '', cage: '', style: '', notes: new Set()}))));
@@ -373,6 +375,10 @@ const Game = ({size, difficulty, operators, playerMap, setAnswerMap, setPlayerMa
         if (gameOver) {
             setReplay(playerMap);
             setTimeout( () => setShowReplay(true), 2500);
+            let time = `${Math.floor(counter/60)}:${counter%60 < 10 ? '0' : ''}${counter%60}`;
+            const history = localStorage.getItem('gameWins');
+            let newHistory = (history ? history + ', ' : '') + JSON.stringify({size, time});
+            localStorage.setItem('gameWins', newHistory);
             return;
         }
         const interval = setInterval(() => setCounter(counter+1), 1000);
